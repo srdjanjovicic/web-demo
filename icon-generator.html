@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PWA Icon Generator</title>
+</head>
+<body>
+  <h1>PWA Icon Generator</h1>
+  <p>Converting SVG icons to PNG...</p>
+  <canvas id="canvas192" width="192" height="192" style="border:1px solid #ccc; margin: 10px;"></canvas>
+  <canvas id="canvas512" width="512" height="512" style="border:1px solid #ccc; margin: 10px;"></canvas>
+  
+  <script>
+    const svg192 = `<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#898AC4;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#A2AADB;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="192" height="192" rx="40" fill="url(#grad)"/>
+      <text x="96" y="130" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#FFF2E0" text-anchor="middle">SM</text>
+      <circle cx="96" cy="60" r="25" fill="#FFF2E0" opacity="0.9"/>
+    </svg>`;
+
+    const svg512 = `<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#898AC4;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#A2AADB;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="110" fill="url(#grad2)"/>
+      <text x="256" y="350" font-family="Arial, sans-serif" font-size="220" font-weight="bold" fill="#FFF2E0" text-anchor="middle">SM</text>
+      <circle cx="256" cy="160" r="70" fill="#FFF2E0" opacity="0.9"/>
+    </svg>`;
+
+    function svgToPng(svgString, canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, size, size);
+        
+        canvas.toBlob(function(blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `pwa-${size}x${size}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      };
+      
+      const blob = new Blob([svgString], {type: 'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      img.src = url;
+    }
+
+    setTimeout(() => {
+      svgToPng(svg192, 'canvas192', 192);
+      svgToPng(svg512, 'canvas512', 512);
+    }, 100);
+  </script>
+</body>
+</html>
